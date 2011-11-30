@@ -96,10 +96,10 @@ signatureProvider:(id<OASignatureProviding>)aProvider
 - (void)prepare {
     // sign
 //	NSLog(@"Base string is: %@", [self _signatureBaseString]);
-   signature = [signatureProvider signClearText:[self _signatureBaseString]
-                                      withSecret:[NSString stringWithFormat:@"%@&%@",
-                                                  consumer.secret,
-                                                  token.secret ? token.secret : @""]];
+  signature = [[signatureProvider signClearText:[self _signatureBaseString]
+                                     withSecret:[NSString stringWithFormat:@"%@&%@",
+                                                 consumer.secret,
+                                                 token.secret ? token.secret : @""]] retain];
     
     // set OAuth headers
 	NSMutableArray *chunks = [[NSMutableArray alloc] init];
@@ -205,8 +205,10 @@ signatureProvider:(id<OASignatureProviding>)aProvider
 
 - (void) dealloc
 {
-    [consumer release];
+  [consumer release];
 	[token release];
+  [realm release];
+  [signature release];
 	[signatureProvider release];
 	[timestamp release];
 	if (nonce) {
